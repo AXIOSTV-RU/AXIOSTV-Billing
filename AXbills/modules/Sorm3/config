@@ -1,0 +1,4 @@
+our %FUNCTIONS_LIST = (
+  "01:0:<p>$lang{SORM3}</p>:null:" => 5,
+  "10:1:<p>$lang{MAIN_DICTIONARIES}</p>:ip_pools:" => 5
+);

@@ -1,0 +1,8 @@
+# macOS AppleDouble / Finder
+._*
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+__MACOSX

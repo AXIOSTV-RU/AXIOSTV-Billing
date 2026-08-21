@@ -1,0 +1,1042 @@
+/crm/leads:
+  post:
+    tags:
+      - crm
+    summary: Добавление потенциального клиента
+    operationId: addLead
+    requestBody:
+      description: Параметры, которые нужно указать
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmLead"
+      required: true
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiSuccessAddResponse"
+    security:
+      - KEY: [ ]
+/crm/leads/{ID}:
+  get:
+    tags:
+      - crm
+    summary: Получить информацию о потенциальном клиенте
+    description: Возвращает информацию о лиде
+    operationId: getCrmLeadInfo
+    parameters:
+      - name: ID
+        in: path
+        description: ID потенциального клиента
+        required: true
+        schema:
+          type: integer
+          format: int64
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmLead"
+    security:
+      - KEY: [ ]
+  put:
+    tags:
+      - crm
+    summary: Изменить потенциального клиента
+    operationId: crmLeadChange
+    parameters:
+      - name: ID
+        in: path
+        required: true
+        description: ID потенциального клиента
+        schema:
+          type: integer
+          default: int64
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmLead"
+      required: true
+    responses:
+      400:
+        description: Can't get old data for change
+        content: { }
+    security:
+      - KEY: [ ]
+  delete:
+    tags:
+      - crm
+    summary: Удалить потенциального клиента
+    parameters:
+      - name: ID
+        in: path
+        description: ID потенциального клиента
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: Successfully deleted
+      400:
+        description: Нет потенциального клиента с таким id
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errno:
+                  type: integer
+                  example: 104003
+                errstr:
+                  type: string
+                  example: "No lead with id 19"
+    security:
+      - KEY: []
+/crm/leads/:
+  get:
+    tags:
+      - crm
+    summary: Список потенциальных клиентов
+    operationId: getLeadsList
+    parameters:
+      - name: leadId
+        in: query
+        description: Id потенциального клиента
+        schema:
+          type: boolean
+          default: true
+      - name: id
+        in: query
+        description: Id потенциального клиента
+        schema:
+          type: boolean
+          default: true
+      - name: userLogin
+        in: query
+        description: Логин пользователя, к которому привязан потенциальный клиент
+        schema:
+          type: boolean
+          default: false
+      - name: uid
+        in: query
+        description: UID пользователя, к которому привязан потенциальный клиент
+        schema:
+          type: boolean
+          default: true
+      - name: holdupDate
+        in: query
+        description: Дата, до которой приостановлена работа с клиентом.
+        schema:
+          type: boolean
+          default: true
+      - name: fio
+        in: query
+        description: ФИО потенциального клиента
+        schema:
+          type: boolean
+          default: false
+      - name: phone
+        in: query
+        description: Номер телефона
+        schema:
+          type: boolean
+          default: false
+      - name: email
+        in: query
+        description: E-mail
+        schema:
+          type: boolean
+          default: false
+      - name: company
+        in: query
+        description: Компания
+        schema:
+          type: boolean
+          default: false
+      - name: responsible
+        in: query
+        description: ID ответственного администратора
+        schema:
+          type: boolean
+          default: false
+      - name: adminName
+        in: query
+        description: Имя ответственного администратора
+        schema:
+          type: boolean
+          default: false
+      - name: source
+        in: query
+        description: Источник, из которого пришел потенциальный клиент
+        schema:
+          type: boolean
+          default: false
+      - name: date
+        in: query
+        description: Дата создания потенциального клиента
+        schema:
+          type: boolean
+          default: false
+      - name: currentStep
+        in: query
+        description: ID текущего шага, на котором находится потенциальный клиент.
+        schema:
+          type: boolean
+          default: false
+      - name: currentStepName
+        in: query
+        description: Название текущего шага, на котором находится потенциальный клиент.
+        schema:
+          type: boolean
+          default: false
+      - name: address
+        in: query
+        description: Адрес
+        schema:
+          type: boolean
+          default: false
+      - name: priority
+        in: query
+        description: Приоритет
+        schema:
+          type: boolean
+          default: false
+      - name: comments
+        in: query
+        description: Комментарий
+        schema:
+          type: boolean
+          default: false
+      - name: competitorId
+        in: query
+        description: Id конкурента
+        schema:
+          type: boolean
+          default: false
+      - name: tagIds
+        in: query
+        description: Id тегов
+        schema:
+          type: boolean
+          default: false
+      - name: addressFull
+        in: query
+        description: Полный адрес потенцильного клиента
+        schema:
+          type: boolean
+          default: false
+      - name: watcher
+        in: query
+        description: Параметр, который отвечает за слежение за потенциальным клиентом (1 - следить, 0 - нет)
+        schema:
+          type: boolean
+          default: false
+      - name: pageRows
+        in: query
+        description: Количество записей
+        schema:
+          type: integer
+          default: 25
+      - name: pg
+        in: query
+        description: Работает вместе с pageRows, параметр отвечает с какой записи начинать возвращать в запросе
+        schema:
+          type: integer
+          default: 0
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadsList"
+    security:
+      - KEY: [ ]
+/crm/action:
+  post:
+    tags:
+      - crm
+    summary: Добавление действия
+    operationId: addCrmAction
+    requestBody:
+      description: Параметры, которые нужно указать
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmAction"
+      required: true
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiSuccessAddResponse"
+    security:
+      - KEY: [ ]
+/crm/action/{ACTION_ID}:
+  get:
+    tags:
+      - crm
+    summary: Получить информацию о действии
+    operationId: getCrmActionInfo
+    parameters:
+      - name: ACTION_ID
+        in: path
+        description: ID действия
+        required: true
+        schema:
+          type: integer
+          format: int64
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmAction"
+    security:
+      - KEY: [ ]
+  put:
+    tags:
+      - crm
+    summary: Изменить действие
+    operationId: crmActionChange
+    parameters:
+      - name: ACTION_ID
+        in: path
+        required: true
+        description: ID действия
+        schema:
+          type: integer
+          default: int64
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmAction"
+      required: true
+    responses:
+      400:
+        description: Can't get old data for change
+        content: { }
+    security:
+      - KEY: [ ]
+  delete:
+    tags:
+      - crm
+    summary: Удалить действие
+    parameters:
+      - name: ACTION_ID
+        in: path
+        description: ID действия
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: Successfully deleted
+      400:
+        description: Нет действия с таким id
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errno:
+                  type: integer
+                  example: 104004
+                errstr:
+                  type: string
+                  example: "Action not found"
+    security:
+      - KEY: []
+/crm/actions/:
+  get:
+    tags:
+      - crm
+    summary: Список действий
+    operationId: getCrmActionsList
+    parameters:
+      - name: id
+        in: query
+        description: Id действия
+        schema:
+          type: boolean
+          default: true
+      - name: name
+        in: query
+        description: Название действия
+        schema:
+          type: boolean
+          default: false
+      - name: action
+        in: query
+        description: Описание действия
+        schema:
+          type: boolean
+          default: false
+      - name: pageRows
+        in: query
+        description: Количество записей
+        schema:
+          type: integer
+          default: 25
+      - name: pg
+        in: query
+        description: Работает вместе с pageRows, параметр отвечает с какой записи начинать возвращать в запросе
+        schema:
+          type: integer
+          default: 0
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmActionsList"
+    security:
+      - KEY: [ ]
+/crm/step:
+  post:
+    tags:
+      - crm
+    summary: Добавление шага прогресса
+    operationId: addCrmStep
+    requestBody:
+      description: Параметры, которые нужно указать
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmStep"
+      required: true
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiSuccessAddResponse"
+    security:
+      - KEY: [ ]
+/crm/step/{STEP_ID}:
+  get:
+    tags:
+      - crm
+    summary: Получить информацию о шаге прогресса
+    operationId: getCrmStepInfo
+    parameters:
+      - name: STEP_ID
+        in: path
+        description: ID шага
+        required: true
+        schema:
+          type: integer
+          format: int64
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmStep"
+    security:
+      - KEY: [ ]
+  put:
+    tags:
+      - crm
+    summary: Изменить действие
+    operationId: crmStepChange
+    parameters:
+      - name: STEP_ID
+        in: path
+        required: true
+        description: ID шага
+        schema:
+          type: integer
+          default: int64
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmStep"
+      required: true
+    responses:
+      400:
+        description: Can't get old data for change
+        content: { }
+    security:
+      - KEY: [ ]
+  delete:
+    tags:
+      - crm
+    summary: Удалить шаг
+    parameters:
+      - name: STEP_ID
+        in: path
+        description: ID шага
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: Successfully deleted
+      400:
+        description: Нет шага с таким id
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errno:
+                  type: integer
+                  example: 104005
+                errstr:
+                  type: string
+                  example: "Step not found"
+    security:
+      - KEY: []
+/crm/steps/:
+  get:
+    tags:
+      - crm
+    summary: Список шагов прогресса
+    operationId: getCrmStepsList
+    parameters:
+      - name: id
+        in: query
+        description: Id шага
+        schema:
+          type: boolean
+          default: true
+      - name: name
+        in: query
+        description: Название шага
+        schema:
+          type: boolean
+          default: false
+      - name: stepNumber
+        description: Номер шага
+        in: query
+        schema:
+          type: boolean
+          default: false
+      - name: color
+        in: query
+        description: Цвет
+        schema:
+          type: boolean
+          default: false
+      - name: dealStep
+        in: query
+        description: 1 - шаг принадлежит сделкам, 0 - потенциальному клиенту
+        schema:
+          type: boolean
+          default: false
+      - name: description
+        in: query
+        description: Описание
+        schema:
+          type: boolean
+          default: false
+      - name: pageRows
+        in: query
+        description: Количество записей
+        schema:
+          type: integer
+          default: 25
+      - name: pg
+        in: query
+        description: Работает вместе с pageRows, параметр отвечает с какой записи начинать возвращать в запросе
+        schema:
+          type: integer
+          default: 0
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmStepsList"
+    security:
+      - KEY: [ ]
+/crm/dialogues/:
+  get:
+    tags:
+      - crm
+    summary: Список диалогов
+    operationId: getCrmDialoguesList
+    parameters:
+      - name: id
+        in: query
+        description: Id диалога
+        schema:
+          type: boolean
+          default: true
+      - name: leadId
+        in: query
+        description: Id потенциального клиента
+        schema:
+          type: boolean
+          default: false
+      - name: leadFio
+        in: query
+        description: ФИО потенциального клиента
+        schema:
+          type: boolean
+          default: false
+      - name: admin
+        in: query
+        description: Ответственный администратор
+        schema:
+          type: boolean
+          default: false
+      - name: aid
+        in: query
+        description: Id ответственного администратор
+        schema:
+          type: boolean
+          default: false
+      - name: date
+        in: query
+        description: Дата создания диалога
+        schema:
+          type: boolean
+          default: false
+      - name: source
+        in: query
+        description: Источник
+        schema:
+          type: boolean
+          default: false
+      - name: lastMessage
+        in: query
+        description: Последнее сообщение
+        schema:
+          type: boolean
+          default: false
+      - name: pageRows
+        in: query
+        description: Количество записей
+        schema:
+          type: integer
+          default: 25
+      - name: pg
+        in: query
+        description: Работает вместе с pageRows, параметр отвечает с какой записи начинать возвращать в запросе
+        schema:
+          type: integer
+          default: 0
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmDialoguesList"
+    security:
+      - KEY: [ ]
+/crm/dialogue/{ID}:
+  put:
+    tags:
+      - crm
+    summary: Изменить диалог
+    operationId: crmDialogueChange
+    parameters:
+      - name: ID
+        in: path
+        required: true
+        description: ID диалога
+        schema:
+          type: integer
+          default: int64
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmDialogueChangeRequest"
+      required: true
+    responses:
+      400:
+        description: Can't get old data for change
+        content: { }
+    security:
+      - KEY: [ ]
+/crm/dialogue/{ID}/messages:
+  get:
+    tags:
+      - crm
+    summary: Получить список сообщений диалога
+    description: Возвращает список сообщений диалога
+    operationId: getCrmDialogueMessages
+    parameters:
+      - name: ID
+        in: path
+        description: ID диалога
+        required: true
+        schema:
+          type: integer
+          format: int64
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmDialogueMessagesArray"
+    security:
+      - KEY: [ ]
+/crm/dialogue/{ID}/message:
+  post:
+    tags:
+      - crm
+    summary: Добавление и отправка сообщения в диалог
+    operationId: addMessageToDialogue
+    parameters:
+      - name: ID
+        in: path
+        description: ID диалога
+        required: true
+        schema:
+          type: integer
+          format: int64
+    requestBody:
+      description: Параметры, которые нужно указать
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmDialogueMessage"
+      required: true
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiSuccessAddResponse"
+    security:
+      - KEY: [ ]
+/crm/sections:
+  post:
+    tags:
+      - crm
+    summary: Добавление раздела информации
+    operationId: addLeadSection
+    requestBody:
+      description: Параметры, которые нужно указать
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmSection"
+      required: true
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiSuccessAddResponse"
+    security:
+      - KEY: [ ]
+/crm/sections/{ID}:
+  put:
+    tags:
+      - crm
+    summary: Изменить информацию о разделе
+    parameters:
+      - name: ID
+        in: path
+        description: ID раздела
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmSection"
+      required: true
+    responses:
+      400:
+        description: Ошибка изменения данных
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errno:
+                  type: integer
+                  example: 31019
+                errstr:
+                  type: string
+                  example: Can't get old data for change
+    security:
+      - KEY: []
+  delete:
+    tags:
+      - crm
+    summary: Удалить раздел информации
+    parameters:
+      - name: ID
+        in: path
+        description: ID раздела
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: Successfully deleted
+      400:
+        description: Нет раздела с таким id
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errno:
+                  type: integer
+                  example: 31037
+                errstr:
+                  type: string
+                  example: "Section not found"
+    security:
+      - KEY: []
+/crm/deals/{ID}:
+  put:
+    tags:
+      - crm
+    summary: Изменить сделку
+    operationId: crmDealChange
+    parameters:
+      - name: ID
+        in: path
+        required: true
+        description: ID сделки
+        schema:
+          type: integer
+          default: int64
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmDealChangeRequest"
+      required: true
+    responses:
+      400:
+        description: Can't get old data for change
+        content: { }
+    security:
+      - KEY: [ ]
+/crm/progressbar/messages:
+  post:
+    tags:
+      - crm
+    summary: Добавление сообщение в шкалу прогресса
+    operationId: addProgressBarMessage
+    requestBody:
+      description: Параметры, которые нужно указать
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmProgressMessage"
+      required: true
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiSuccessAddResponse"
+    security:
+      - KEY: [ ]
+/crm/progressbar/messages/{ID}:
+  delete:
+    tags:
+      - crm
+    summary: Удалить сообщение из шкалы прогресса
+    parameters:
+      - name: ID
+        in: path
+        description: ID сообщения
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: Successfully deleted
+    security:
+      - KEY: []
+  put:
+    tags:
+      - crm
+    summary: Изменить сообщение в общем списке коментариев
+    operationId: CrmCommentPin
+    parameters:
+      - name: ID
+        in: path
+        required: true
+        description: ID задачи/коментария
+        schema:
+          type: integer
+          format: int64
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmProgressMessage"
+      required: true
+    responses:
+      400:
+        description: Can't get old data for change
+        content: { }
+    security:
+      - KEY: [ ]
+/crm/attachment/:
+  post:
+    tags:
+      - crm
+    summary: Добавление файла
+    operationId: crmAddAttachment
+    requestBody:
+      description: Параметры, которые нужно указать
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CrmAttachment"
+      required: true
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                insertId:
+                  type: integer
+                  example: 1
+                affected:
+                  type: integer
+                  example: 1
+                filename:
+                  type: string
+                  example: 'image.jpg'
+    security:
+      - KEY: [ ]
+/crm/attachment/{ID}:
+  delete:
+    tags:
+      - crm
+    summary: Удалить файл
+    parameters:
+      - name: ID
+        in: path
+        description: ID файла
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Успешное выполнение
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: Successfully deleted
+    security:
+      - KEY: []
+/crm/sources/:
+  get:
+    tags:
+      - crm
+    summary: Список источников
+    operationId: getCrmSourcesList
+    parameters:
+      - name: id
+        in: query
+        description: Id действия
+        schema:
+          type: boolean
+          default: true
+      - name: name
+        in: query
+        description: Название источника
+        schema:
+          type: boolean
+          default: false
+      - name: comments
+        in: query
+        description: Комментарий
+        schema:
+          type: boolean
+          default: false
+      - name: pageRows
+        in: query
+        description: Количество записей
+        schema:
+          type: integer
+          default: 25
+      - name: pg
+        in: query
+        description: Работает вместе с pageRows, параметр отвечает с какой записи начинать возвращать в запросе
+        schema:
+          type: integer
+          default: 0
+    responses:
+      200:
+        description: успешное выполнение
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmSourcesList"
+    security:
+      - KEY: [ ]

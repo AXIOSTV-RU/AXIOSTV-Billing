@@ -1,0 +1,222 @@
+
+ --- Installation manual --- //[[|Andman - andman@ppnnet.net]] 2005/08/03 06:31//
+
+
+=====Radius=====
+
+First step:\\
+ You need to download and install the latest version of FreeRaduis    [http://www.freeradius.org]
+
+  
+  server$ tar zxvf freeradius-1.0.1.tar.gz  
+  server$ ./configure --prefix=/usr/local/radiusd/
+  server$ make
+
+''(here you need to become superuser root)''
+
+  server# make install
+
+ If you don't see any errors - congratulations you have successfully installed radius server:
+
+ Next step is to configure radius server:
+
+  server# vi /usr/local/radiusd/etc/raddb/users
+
+  DEFAULT Auth-Type = Accept
+    Exec-Program-Wait = "/usr/axbills/libexec/rauth.pl"
+
+  server# vi /usr/local/radiusd/etc/raddb/acct_users 
+
+  DEFAULT Acct-Status-Type == Start
+     Exec-Program = "/usr/axbills/libexec/racct.pl"
+  DEFAULT Acct-Status-Type == Alive
+     Exec-Program = "/usr/axbills/libexec/racct.pl"
+  DEFAULT Acct-Status-Type == Stop
+     Exec-Program = "/usr/axbills/libexec/racct.pl"
+
+   server# vi /usr/local/radiusd/etc/raddb/clients.conf
+
+Put the IP or the name of your NAS server:
+
+  client nashost.nasdomain {
+     secret = radsecret
+     shortname = shorrname
+  }
+
+  server# vi /usr/local/radiusd/etc/raddb/radiusd.conf
+
+ The following lines have to be commented:
+
+  authorize {
+    preprocess
+  # chap
+  # counter
+  # attr_filter
+  # eap
+    suffix
+    files
+  # etc_smbpasswd
+  # sql
+  # mschap
+  }
+
+
+
+=====MySQL=====    
+ Download the tarball from [http://www.mysql.com]
+
+   server$ tar xvfz mysql-4.0.23a.tar.gz
+   server$ cd mysql-4.0.23a
+   server$ ./configure
+   server$ make
+   server# make install
+
+
+ Create user and database:
+
+use mysql;
+INSERT INTO user (Host, User, Password) VALUES ('%','axbills', password('sqlpassword'));
+INSERT INTO db (Host, Db, User, Select_priv, Insert_priv, Update_priv, Delete_priv, Create_priv, Drop_priv, Index_priv, Alter_priv) 
+ VALUES ('localhost', 'axbills', 'axbills', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y');
+\\
+CREATE DATABASE axbills;
+  server# mysqladmin flush-privileges;
+\\
+
+ Create tables in the database:
+
+  server# mysql -D axbills < axbills.sql
+
+
+=====Web Server=====
+
+=====Apache=====
+
+
+ In our case using Apache and must edit **httpd.conf**:
+
+  Alias /billing "/usr/axbills/cgi-bin/"
+  <Directory "/usr/axbills/cgi-bin">
+     <IfModule mod_rewrite.c>
+        RewriteEngine on
+        RewriteCond %{HTTP:Authorization} ^(.*)
+        RewriteRule ^(.*) - [E=HTTP_CGI_AUTHORIZATION:%1]
+        Options Indexes ExecCGI SymLinksIfOwnerMatch
+     </IfModule>
+     Options Indexes ExecCGI FollowSymLinks
+     AllowOverride none
+     DirectoryIndex users.cgi
+     AddHandler cgi-script .cgi
+     Order allow,deny
+     Allow from all
+  </Directory>
+
+
+  <Directory "/usr/axbills/cgi-bin/admin">
+    Options Indexes ExecCGI SymLinksIfOwnerMatch
+    AllowOverride none
+    DirectoryIndex users.cgi
+    order deny,allow
+    deny from all
+    AuthType Basic
+    AuthName "AXbills"
+    AuthUserFile /usr/axbills/cgi-bin/admin/admins
+    Satisfy Any
+    require valid-user
+  </Directory>
+
+
+=====Perl modules=====
+
+ You need install some perl modules before proceed:
+
+| **DBI**        |                           |
+| **DBD::mysql** |                           |
+| **Digest-MD5** | for Chap authorization      |
+| **Digest-MD4** | for MS-Chap authorization   |
+| **Crypt-DES**  | for MS-Chap authorization   |
+| **Digest-SHA1**| for MS-ChapV2 authorization |
+| **libnet**     | Only for UNIX type authorization|
+| **Time-HiRes** | Show authorization,page generation time. |
+
+ Download it from [http://www.cpan.org]
+
+
+
+
+
+=====AXbills=====
+ Download it from [http://sourceforge.net/projects/axbills/]
+
+   server$ tar zxvf axbills-0.24b.tgz
+   server# cp -Rf axbills /usr/
+
+   server# vi /usr/axbills/libexec/config.pl
+
+   #DB configuration 
+   $conf{dbhost}='localhost';
+   $conf{dbname}='axbills'; 
+   $conf{dblogin}='axbills';
+   $conf{dbpasswd}='sqlpassword'; 
+   $conf{ADMIN_MAIL}='info@your.domain'; 
+   $conf{USERS_MAIL_DOMAIN}="your.domain";
+   $conf{secretkey}="test12345678901234567890";
+
+   server# vi /usr/axbills/cgi-bin/admin/Abwconf.pm
+
+   $dbhost='localhost';
+   $dbname='axbills';
+   $dbuser='axbills';
+   $dbpasswd='sqlpassword';
+   $mail_domain='your.domain';
+   $mail_from='axbills@your.domain';
+
+   server# vi /etc/crontab
+   \*/5  *      *    *     *   root   /usr/axbills/libexec/billd -all
+   1     0      *    *     *   root    /usr/axbills/libexec/periodic daily
+   1     0      1    *     *   root    /usr/axbills/libexec/periodic monthly
+
+ Change the permissions:
+
+  server# chown -Rf www /usr/axbills/cgi-bin
+
+ File **/usr/axbills/cgi-bin/admin/admins** contain admin's password:
+
+  server# htpasswd -c /usr/axbills/cgi-bin/admin/admins admin
+
+
+
+ Go to web your interface **http://your.host/billing/admin/**\\
+ First of all must fill the parameters for NAS server:\\
+ Going to menu:\\
+ **Other->NAS configuration**\\
+ 
+| IP                     | NAS server IP                        |
+| Name                   | Name                                    |
+| Radius NAS-Identifier  | NAS-Identifier (can be empty) |
+| Describe               | Server description                            |
+| Type                   | Server type |
+| Authorization          | Type of authorization. \\ **SYSTEM** - UNIX type (/etc/passwd)\\ **SQL** - use SQL database (MySQL, PosgreSQL)\\  |
+| :Manage:               | NAS server management |
+| IP:PORT                  | IP address and port to control connections.|
+| User                   | Username                   |
+| Password               | Password                                     |
+| RADIUS Parameters      | Further parameters for NAS after login.|
+
+ Create tariff plans:\\
+ Menu:\\
+**Tarif Plans**\\
+
+ Register a customer:\\
+**Users->Add**\\
+
+
+**Testing**\\
+  server# radtest testuser testpassword 127.0.0.1:1812 0 radsecret 0 127.0.0.1
+ 
+ See '**/usr/axbills/var/log/axbills.log**' for more details (errors,messages) \\
+
+  2005-08-03 12:55:55 LOG_INFO: AUTH [testuser] NAS: 1 (xxx.xxx.xxx.xxx) GT: 0.03799
+
+
+ 

@@ -1,0 +1,4 @@
+#AXbills %DATE% %TIME%
+
+%IF_LINKS%
+

@@ -1,0 +1,148 @@
+.inner-message {
+	background-color: #6c757d !important;
+	padding: 5px 20px 5px 20px !important;
+	color: white;
+}
+
+.justify-content-start, .justify-content-end {
+	animation-duration: 0.3s;
+	animation-delay: 0.2s;
+	animation-name: animate-slide;
+	animation-timing-function: cubic-bezier(.26, .53, .74, 1.48);
+	animation-fill-mode: backwards;
+}
+
+.animate.slide {
+	animation-name: animate-slide;
+}
+
+@keyframes animate-slide {
+	0% {
+		opacity: 0;
+		transform: translate(0, 20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(0, 0);
+	}
+}
+
+.hr-lines {
+	position: relative;
+	max-width: 92%;
+	margin: 20px auto;
+	text-align: center;
+}
+
+.hr-lines:before {
+	content: " ";
+	height: 2px;
+	width: 40%;
+	background: #e3effd;
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 0;
+}
+
+.hr-lines:after {
+	content: " ";
+	height: 2px;
+	width: 40%;
+	background: #e3effd;
+	display: block;
+	position: absolute;
+	top: 50%;
+	right: 0;
+}
+
+.balance-buttons a {
+	margin-top: .25rem !important;
+}
+
+.balance-buttons a.btn-primary {
+	font-weight: bold;
+}
+
+.msg_card_body {
+	max-height: 70vh;
+	overflow-y: auto;
+}
+
+.user_img_msg {
+	height: 40px;
+	width: 40px;
+	border: 1.5px solid #f5f6fa;
+}
+
+.img_cont_msg {
+	height: 40px;
+	width: 40px;
+}
+
+.dark-mode .message {
+	color: black;
+}
+
+.message {
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-left: 10px;
+	background-color: #f6f6f6;
+	padding: 10px;
+	border-radius: 12px;
+	position: relative;
+	max-width: 75%;
+}
+
+.justify-content-end .message {
+	margin-right: 10px !important;
+	background-color: #e3effd !important;
+}
+
+.message .text-muted, .message .text-danger {
+	position: relative;
+	top: 10px;
+	font-size: 0.8rem;
+}
+
+.dialogue-attachment {
+	max-height: 100px;
+}
+
+.dialogue-files-container {
+	position: relative;
+}
+
+textarea {
+	width: 100%;
+	padding-bottom: 30px !important;
+}
+
+.icon {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	color: #888;
+}
+
+.file-upload-info {
+	border-top: 1px solid #dee2e6;
+	border-bottom: 1px solid #dee2e6;
+}
+
+.file-upload-info:first-child {
+	border-left: 1px solid #dee2e6;
+	border-bottom-left-radius: 0.25rem!important;
+	border-top-left-radius: 0.25rem!important;
+}
+
+.file-upload-info:last-child {
+	border-right: 1px solid #dee2e6;
+	border-bottom-right-radius: 0.25rem!important;
+	border-top-right-radius: 0.25rem!important;
+}
+
+#message-textarea {
+	min-height: 150px
+}

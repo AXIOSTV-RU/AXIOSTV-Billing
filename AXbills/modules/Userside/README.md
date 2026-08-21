@@ -1,0 +1,83 @@
+# Модуль синхронизации данных с UserSide через протокол UserSide usm_billing.
+- Отдает информацию по абонентам и инфраструктуре;
+- Синхронизация абонентов с UserSide в AXbills.
+
+### Включение
+```
+$conf{US_API}=1;
+```
+Также желательно завести отдельного администратора для синхронизации и прописать ему API _KEY
+### Максимальное число отображаемых записей
+```
+$conf{US_API_MAX_PAGE_ROWS}=10000;
+```
+По умолчанию: 10000.
+
+### Не синхронизировать трафик
+```
+$conf{USERSIDE_SKIP_TRAFFIC}=1;
+```
+
+### Синхронизация удаленных аккаунтов абонентов
+```
+$conf{US_API_SYNC_DELETED}=1;
+```
+### Синхронизация абонентов из заданными тарифными планами. Задавать id тарифных планов (tp_id) через ";"
+```
+$conf{USERSIDE_EXPORT_TP}= '2;3';
+```
+### Просмотр информации
+```
+http://demo.userside.eu/api.php?key=keyus&cat=module&request=get_city_list
+```
+ Userside
+```
+    Запрос:
+    ?key=apikey&request=get_city_list
+    Результат:
+    http://demo.userside.eu/api.php?key=keyus&cat=module&request=get_city_list
+```
+ AXbills
+```
+    Запрос:
+    ?get_index=us_api&key=1523615231263123&cat=module&request=get_city_list
+    (key это Api key администратора)
+    Результат:
+    https://demo.billing.axiostv.ru:9443/admin/index.cgi?get_index=us_api&key=1523615231263123&cat=module&request=get_city_list
+```
+### Список функций
+```
+change_state - изменения состояния (статуса) задания;
+get_related_task_id - список связанных заданий с текущим заданием (идентификаторы);
+get_catalog_type - типы заданий;
+show - информация о задании;
+get_list - список заданий;
+watcher_add - добавление наблюдателя;
+watcher_delete - исключение наблюдателя;
+comment_add - добавление комментария;
+add - создание задания;
+```
+### Тесты
+```
+cd Userside/t
+### Подсказка по тестированию
+perl Api.t -help
+### Запуск теста (по умолчанию тестируется локальный Api)
+perl Api.t
+perl Api.t -local
+### Ключ -remote=<СЕРВЕР> позволяет тестировать удаленно
+perl Api.t -remote='https://demo.billing.axiostv.ru:9443'
+### Ключ -debug возможность увидеть схему и данные которые она проверяет
+perl Api.t -debug
+### Ключ -userside проверяет не изменилась ли схема Json
+perl Api.t -userside
+### Ключ -request=<НАЗВАНИЕ МЕТОДА> тестирование по отдельной функции
+perl Api.t -request=get_user_list
+### Выбор информации по конкретному абоненту
+perl Api.t -request=get_user_list -debug=2 -uid=1489
+```
+
+=====================================================================
+
+Телеграм: https://t.me/AXIOSTV
+E-mail: admin@axiostv.ru

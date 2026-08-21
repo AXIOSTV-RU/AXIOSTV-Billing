@@ -1,0 +1,67 @@
+SET SQL_MODE = 'NO_ENGINE_SUBSTITUTION,NO_AUTO_VALUE_ON_ZERO';
+
+CREATE TABLE IF NOT EXISTS `cams_tp` (
+  `tp_id` SMALLINT(6) UNSIGNED DEFAULT '0',
+  `streams_count` SMALLINT(6) UNSIGNED DEFAULT 0,
+  `dvr` SMALLINT(6) UNSIGNED DEFAULT 0,
+  `ptz` SMALLINT(6) UNSIGNED DEFAULT 0,
+  `archive` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `service_id` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  KEY `tp_id` (`tp_id`)
+)
+  DEFAULT CHARSET=utf8mb4 COMMENT='Cams tariff plans';
+
+CREATE TABLE IF NOT EXISTS `cams_main` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` INT(11) UNSIGNED DEFAULT 0,
+  `tp_id` SMALLINT(6) UNSIGNED DEFAULT 0,
+  `activate` DATETIME DEFAULT NULL,
+  `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  `subscribe_id` VARCHAR(32) NOT NULL DEFAULT '',
+  `expire` DATE NOT NULL DEFAULT '0000-00-00',
+  KEY `uid` (`uid`), 
+  PRIMARY KEY (`id`)
+)
+  DEFAULT CHARSET=utf8mb4 COMMENT='Users subscribed to cams';
+
+CREATE TABLE IF NOT EXISTS `cams_services` (
+  `id` TINYINT(2) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL DEFAULT '',
+  `module` VARCHAR(24) NOT NULL DEFAULT '',
+  `status` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0',
+  `comment` VARCHAR(250) DEFAULT '',
+  `login` VARCHAR(72) NOT NULL DEFAULT '',
+  `password` BLOB,
+  `url` VARCHAR(120) NOT NULL DEFAULT '',
+  `user_portal` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  `debug` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+)
+  DEFAULT CHARSET=utf8mb4 COMMENT='Cams Services';
+
+CREATE TABLE IF NOT EXISTS `cams_groups` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL DEFAULT '',
+  `location_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `district_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `street_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `build_id` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `comment` VARCHAR(250) DEFAULT '',
+  `max_users` SMALLINT(6) UNSIGNED DEFAULT 0,
+  `max_cameras` SMALLINT(6) UNSIGNED DEFAULT 0,
+  `service_id` INT(6) UNSIGNED NOT NULL DEFAULT 0,
+  `subgroup_id` VARCHAR(32) NOT NULL DEFAULT '' COMMENT 'External group ID for syncronization',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+)
+  DEFAULT CHARSET=utf8mb4 COMMENT='Cams Groups';
+
+CREATE TABLE IF NOT EXISTS `cams_users_groups` (
+  `id` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
+  `tp_id` SMALLINT(6) UNSIGNED NOT NULL DEFAULT '0',
+  `group_id` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `changed` DATETIME NOT NULL,
+  UNIQUE KEY `id` (`id`, `group_id`, `tp_id`)
+)
+  DEFAULT CHARSET=utf8mb4 COMMENT = 'Cams users groups';

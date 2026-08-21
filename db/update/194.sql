@@ -1,0 +1,6 @@
+ALTER TABLE users_pi ADD COLUMN `citizenship` varchar(1) NOT NULL DEFAULT '1';
+ALTER TABLE `users_pi` MODIFY COLUMN `pasport_number` VARCHAR(10) NOT NULL DEFAULT '';
+ALTER TABLE `users_pi` MODIFY COLUMN `pasport_series` VARCHAR(10) NOT NULL DEFAULT '';
+ALTER TABLE `users_pi` MODIFY COLUMN `pasport_num` VARCHAR(20) NOT NULL DEFAULT '';
+ALTER TABLE `users_pi` MODIFY COLUMN `pasport_grant` VARCHAR(255) NOT NULL DEFAULT '';
+ALTER TABLE users_pi MODIFY COLUMN `fio1` varchar(40) NOT NULL DEFAULT '' AFTER fio;

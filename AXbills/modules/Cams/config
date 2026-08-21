@@ -1,0 +1,25 @@
+%FUNCTIONS_LIST = (
+  "1:0:$lang{SMART_YARD}:null"                 => 5,
+  "2:1:$lang{DEVICES}:null"                    => 5,
+  "3:2:$lang{WORK_WITH_DEVICES}:cams_main"     => 5,
+  "4:2:$lang{MAP_BINDING}:cams_devices_geo"    => 5,
+  "5:1:$lang{SERVICES}:cams_services"          => 5,
+  "6:1:$lang{TARIF_PLANS}:cams_tp"             => 5,
+  "7:1:$lang{GROUPS}:cams_groups"              => 5,
+  "09:0:$lang{CAMERAS}:cams_users_list:"       => 11,
+  "10:0:$lang{CAMERAS}:null:"                  => 4,
+  "11:10:$lang{SERVICES}:cams_service_report:" => 4,
+);
+
+$FUNCTIONS_LIST{"16:0:$lang{TP_CAMERAS}:cams_user"} = 20;
+$FUNCTIONS_LIST{"19:01::cams_get_service_groups:AJAX"} = 5;
+
+%USER_FUNCTION_LIST = (
+  "01:0:$lang{CAMERAS}:cams_user_info" => 0
+);
+
+our %PERIODIC = (
+  monthly => [ 'cams_monthly_fees' ]
+);
+
+1;
